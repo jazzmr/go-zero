@@ -31,11 +31,7 @@ type ZRpcContext struct {
 }
 
 // NewDefaultRPCGenerator wraps Generator with configure
-func NewDefaultRPCGenerator(style string, options ...RPCGeneratorOption) (*RPCGenerator, error) {
-	cfg, err := conf.NewConfig(style)
-	if err != nil {
-		return nil, err
-	}
+func NewDefaultRPCGenerator(cfg *conf.Config, options ...RPCGeneratorOption) (*RPCGenerator, error) {
 	return NewRPCGenerator(NewDefaultGenerator(), cfg, options...), nil
 }
 

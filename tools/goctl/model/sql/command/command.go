@@ -32,6 +32,7 @@ const (
 	flagHome     = "home"
 	flagRemote   = "remote"
 	flagBranch   = "branch"
+	flagPrefix   = "prefix"
 )
 
 var errNotMatched = errors.New("sql not matched")
@@ -47,6 +48,7 @@ func MysqlDDL(ctx *cli.Context) error {
 	home := ctx.String(flagHome)
 	remote := ctx.String(flagRemote)
 	branch := ctx.String(flagBranch)
+	prefix := ctx.String(flagPrefix)
 	if len(remote) > 0 {
 		repo, _ := file.CloneIntoGitHome(remote, branch)
 		if len(repo) > 0 {
@@ -56,7 +58,7 @@ func MysqlDDL(ctx *cli.Context) error {
 	if len(home) > 0 {
 		pathx.RegisterGoctlHome(home)
 	}
-	cfg, err := config.NewConfig(style)
+	cfg, err := config.NewConfigFormatPrefix(style, prefix)
 	if err != nil {
 		return err
 	}
@@ -74,6 +76,7 @@ func MySqlDataSource(ctx *cli.Context) error {
 	home := ctx.String(flagHome)
 	remote := ctx.String(flagRemote)
 	branch := ctx.String(flagBranch)
+	prefix := ctx.String(flagPrefix)
 	if len(remote) > 0 {
 		repo, _ := file.CloneIntoGitHome(remote, branch)
 		if len(repo) > 0 {
@@ -85,7 +88,7 @@ func MySqlDataSource(ctx *cli.Context) error {
 	}
 
 	pattern := strings.TrimSpace(ctx.String(flagTable))
-	cfg, err := config.NewConfig(style)
+	cfg, err := config.NewConfigFormatPrefix(style, prefix)
 	if err != nil {
 		return err
 	}
@@ -104,6 +107,7 @@ func PostgreSqlDataSource(ctx *cli.Context) error {
 	home := ctx.String(flagHome)
 	remote := ctx.String(flagRemote)
 	branch := ctx.String(flagBranch)
+	prefix := ctx.String(flagPrefix)
 	if len(remote) > 0 {
 		repo, _ := file.CloneIntoGitHome(remote, branch)
 		if len(repo) > 0 {
@@ -119,7 +123,7 @@ func PostgreSqlDataSource(ctx *cli.Context) error {
 	}
 
 	pattern := strings.TrimSpace(ctx.String(flagTable))
-	cfg, err := config.NewConfig(style)
+	cfg, err := config.NewConfigFormatPrefix(style, prefix)
 	if err != nil {
 		return err
 	}
@@ -202,6 +206,7 @@ func fromMysqlDataSource(url, pattern, dir string, cfg *config.Config, cache, id
 		}
 
 		table, err := columnData.Convert()
+		table.Prefix = cfg.Prefix
 		if err != nil {
 			return err
 		}
@@ -257,6 +262,7 @@ func fromPostgreSqlDataSource(url, pattern, dir, schema string, cfg *config.Conf
 		}
 
 		table, err := columnData.Convert()
+		table.Prefix = cfg.Prefix
 		if err != nil {
 			return err
 		}

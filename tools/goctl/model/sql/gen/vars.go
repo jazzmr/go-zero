@@ -16,7 +16,9 @@ func genVars(table Table, withCache, postgreSql bool) (string, error) {
 		keys = append(keys, v.VarExpression)
 	}
 
-	camel := table.Name.ToCamel()
+	// trimPrefix
+	camel := table.CamelName()
+
 	text, err := pathx.LoadTemplate(category, varTemplateFile, template.Vars)
 	if err != nil {
 		return "", err
@@ -28,7 +30,7 @@ func genVars(table Table, withCache, postgreSql bool) (string, error) {
 		"upperStartCamelObject": camel,
 		"cacheKeys":             strings.Join(keys, "\n"),
 		"autoIncrement":         table.PrimaryKey.AutoIncrement,
-		"originalPrimaryKey":    wrapWithRawString(table.PrimaryKey.Name.Source(), postgreSql),
+		"originalPrimaryKey":    wrapWithRawString(strings.TrimPrefix(table.PrimaryKey.Name.Source(), table.Prefix), postgreSql),
 		"withCache":             withCache,
 		"postgreSql":            postgreSql,
 		"data":                  table,

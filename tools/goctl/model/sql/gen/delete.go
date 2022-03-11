@@ -20,7 +20,7 @@ func genDelete(table Table, withCache, postgreSql bool) (string, string, error) 
 		keyVariableSet.AddStr(key.KeyLeft)
 	}
 
-	camel := table.Name.ToCamel()
+	camel := table.CamelName()
 	text, err := pathx.LoadTemplate(category, deleteTemplateFile, template.Delete)
 	if err != nil {
 		return "", "", err

@@ -7,6 +7,7 @@ import (
 
 // DefaultFormat defines a default naming style
 const DefaultFormat = "gozero"
+const DefaultPrefix = ""
 
 // Config defines the file naming style
 type Config struct {
@@ -19,6 +20,7 @@ type Config struct {
 	// of each operating system file name.
 	// Note: NamingFormat is based on snake or camel string
 	NamingFormat string `yaml:"namingFormat"`
+	Prefix       string `yaml:"prefix"`
 }
 
 // NewConfig creates an instance for Config
@@ -26,7 +28,21 @@ func NewConfig(format string) (*Config, error) {
 	if len(format) == 0 {
 		format = DefaultFormat
 	}
+
 	cfg := &Config{NamingFormat: format}
+	err := validate(cfg)
+	return cfg, err
+}
+
+// NewConfigFormatPrefix creates an instance for Config
+func NewConfigFormatPrefix(format, prefix string) (*Config, error) {
+	if len(format) == 0 {
+		format = DefaultFormat
+	}
+	if len(prefix) == 0 {
+		prefix = DefaultPrefix
+	}
+	cfg := &Config{NamingFormat: format, Prefix: prefix}
 	err := validate(cfg)
 	return cfg, err
 }

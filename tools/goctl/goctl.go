@@ -660,6 +660,10 @@ var commands = []cli.Command{
 								Usage: "the target dir",
 							},
 							cli.StringFlag{
+								Name:  "prefix",
+								Usage: "the table prefix, table name is tb_user, if the value set tb_, then the tb_ prefix will be replace",
+							},
+							cli.StringFlag{
 								Name:  "style",
 								Usage: "the file naming format, see [https://github.com/zeromicro/go-zero/tree/master/tools/goctl/config/readme.md]",
 							},
@@ -712,6 +716,10 @@ var commands = []cli.Command{
 							cli.StringFlag{
 								Name:  "dir, d",
 								Usage: "the target dir",
+							},
+							cli.StringFlag{
+								Name:  "prefix",
+								Usage: "the table prefix, table name is tb_user, if the value set tb_, then the tb_ prefix will be replace",
 							},
 							cli.StringFlag{
 								Name:  "style",
@@ -770,6 +778,10 @@ var commands = []cli.Command{
 								Usage: "the target dir",
 							},
 							cli.StringFlag{
+								Name:  "prefix",
+								Usage: "the table prefix, table name is tb_user, if the value set tb_, then the tb_ prefix will be replace",
+							},
+							cli.StringFlag{
 								Name:  "style",
 								Usage: "the file naming format, see [https://github.com/zeromicro/go-zero/tree/master/tools/goctl/config/readme.md]",
 							},
@@ -812,6 +824,10 @@ var commands = []cli.Command{
 					cli.StringFlag{
 						Name:  "dir, d",
 						Usage: "the target dir",
+					},
+					cli.StringFlag{
+						Name:  "prefix",
+						Usage: "the table prefix, table name is tb_user, if the value set tb_, then the tb_ prefix will be replace",
 					},
 					cli.StringFlag{
 						Name:  "style",
@@ -927,7 +943,21 @@ func main() {
 	app.Commands = commands
 
 	// cli already print error messages.
-	if err := app.Run(os.Args); err != nil {
+	// goctl model mysql ddl -src tb_user_info.sql -dir . -c
+	args := []string{
+		"goctl",
+		"model",
+		"mysql",
+		"ddl",
+		"-src",
+		"tb_user_info.sql",
+		"-c",
+		"-prefix=tb_",
+		"-dir",
+		".",
+	}
+	//if err := app.Run(os.Args); err != nil {
+	if err := app.Run(args); err != nil {
 		fmt.Println(aurora.Red(errorx.Wrap(err).Error()))
 		os.Exit(codeFailure)
 	}

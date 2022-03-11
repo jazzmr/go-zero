@@ -142,7 +142,10 @@ func (g *defaultGenerator) createFile(modelList map[string]string) error {
 
 	for tableName, code := range modelList {
 		tn := stringx.From(tableName)
-		modelFilename, err := format.FileNamingFormat(g.cfg.NamingFormat, fmt.Sprintf("%s_model", tn.Source()))
+
+		// delete table prefix when create model file
+		prefix := g.cfg.Prefix
+		modelFilename, err := format.FileNamingFormat(g.cfg.NamingFormat, fmt.Sprintf("%s_model", strings.TrimPrefix(tn.Source(), prefix)))
 		if err != nil {
 			return err
 		}
@@ -185,7 +188,7 @@ func (g *defaultGenerator) createFile(modelList map[string]string) error {
 // ret1: key-table name,value-code
 func (g *defaultGenerator) genFromDDL(filename string, withCache bool, database string) (map[string]string, error) {
 	m := make(map[string]string)
-	tables, err := parser.Parse(filename, database)
+	tables, err := parser.Parse(g.cfg.Prefix, filename, database)
 	if err != nil {
 		return nil, err
 	}

@@ -3,6 +3,7 @@ package cli
 import (
 	"errors"
 	"fmt"
+	conf "github.com/zeromicro/go-zero/tools/goctl/config"
 	"path/filepath"
 	"runtime"
 
@@ -52,7 +53,12 @@ func RPC(c *cli.Context) error {
 		return errors.New("missing -dir")
 	}
 
-	g, err := generator.NewDefaultRPCGenerator(style)
+	cfg, err := conf.NewConfig(style)
+	if err != nil {
+		return err
+	}
+
+	g, err := generator.NewDefaultRPCGenerator(cfg)
 	if err != nil {
 		return err
 	}
@@ -113,7 +119,12 @@ func RPCNew(c *cli.Context) error {
 		return err
 	}
 
-	g, err := generator.NewDefaultRPCGenerator(style)
+	cfg, err := conf.NewConfig(style)
+	if err != nil {
+		return err
+	}
+
+	g, err := generator.NewDefaultRPCGenerator(cfg)
 	if err != nil {
 		return err
 	}

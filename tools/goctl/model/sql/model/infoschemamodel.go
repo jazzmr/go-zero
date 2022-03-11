@@ -52,6 +52,7 @@ type (
 	Table struct {
 		Db      string
 		Table   string
+		Prefix  string
 		Columns []*Column
 		// Primary key not included
 		UniqueIndex map[string][]*Column

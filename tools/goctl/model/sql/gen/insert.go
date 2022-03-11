@@ -45,7 +45,7 @@ func genInsert(table Table, withCache, postgreSql bool) (string, string, error) 
 		expressionValues = append(expressionValues, "data."+camel)
 	}
 
-	camel := table.Name.ToCamel()
+	camel := table.CamelName()
 	text, err := pathx.LoadTemplate(category, insertTemplateFile, template.Insert)
 	if err != nil {
 		return "", "", err

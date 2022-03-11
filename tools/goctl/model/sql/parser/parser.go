@@ -22,6 +22,7 @@ type (
 	// Table describes a mysql table
 	Table struct {
 		Name        stringx.String
+		Prefix      string
 		Db          stringx.String
 		PrimaryKey  Primary
 		UniqueIndex map[string][]*Field
@@ -62,7 +63,7 @@ func parseNameOriginal(ts []*parser.Table) (nameOriginals [][]string) {
 }
 
 // Parse parses ddl into golang structure
-func Parse(filename, database string) ([]*Table, error) {
+func Parse(tablePrefix, filename, database string) ([]*Table, error) {
 	p := parser.NewParser()
 	ts, err := p.From(filename)
 	if err != nil {
@@ -169,6 +170,7 @@ func Parse(filename, database string) ([]*Table, error) {
 			PrimaryKey:  primaryKey,
 			UniqueIndex: uniqueIndex,
 			Fields:      fields,
+			Prefix:      tablePrefix,
 		})
 	}
 
@@ -268,6 +270,10 @@ func (t *Table) ContainsTime() bool {
 	return false
 }
 
+func (t *Table) CamelName() string {
+	return stringx.From(strings.Trim(t.Name.Source(), t.Prefix)).ToCamel()
+}
+
 // ConvertDataType converts mysql data type into golang data type
 func ConvertDataType(table *model.Table) (*Table, error) {
 	isPrimaryDefaultNull := table.PrimaryKey.ColumnDefault == nil && table.PrimaryKey.IsNullAble == "YES"
@@ -279,6 +285,7 @@ func ConvertDataType(table *model.Table) (*Table, error) {
 	var reply Table
 	reply.UniqueIndex = map[string][]*Field{}
 	reply.Name = stringx.From(table.Table)
+	reply.Prefix = table.Prefix
 	reply.Db = stringx.From(table.Db)
 	seqInIndex := 0
 	if table.PrimaryKey.Index != nil {

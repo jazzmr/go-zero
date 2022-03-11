@@ -21,6 +21,7 @@ func Action(ctx *cli.Context) error {
 	home := ctx.String("home")
 	remote := ctx.String("remote")
 	branch := ctx.String("branch")
+	prefix := ctx.String("prefix")
 	if len(remote) > 0 {
 		repo, _ := file.CloneIntoGitHome(remote, branch)
 		if len(repo) > 0 {
@@ -35,7 +36,7 @@ func Action(ctx *cli.Context) error {
 		return errors.New("missing type")
 	}
 
-	cfg, err := config.NewConfig(s)
+	cfg, err := config.NewConfigFormatPrefix(s, prefix)
 	if err != nil {
 		return err
 	}

@@ -39,7 +39,7 @@ func genUpdate(table Table, withCache, postgreSql bool) (string, string, error) 
 	} else {
 		expressionValues = append(expressionValues, "data."+table.PrimaryKey.Name.ToCamel())
 	}
-	camelTableName := table.Name.ToCamel()
+	camelTableName := table.CamelName()
 	text, err := pathx.LoadTemplate(category, updateTemplateFile, template.Update)
 	if err != nil {
 		return "", "", err

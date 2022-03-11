@@ -2,6 +2,7 @@ package cli
 
 import (
 	"errors"
+	conf "github.com/zeromicro/go-zero/tools/goctl/config"
 	"os"
 	"path/filepath"
 	"strings"
@@ -97,7 +98,13 @@ func ZRPC(c *cli.Context) error {
 	ctx.IsGooglePlugin = isGooglePlugin
 	ctx.Output = zrpcOut
 	ctx.ProtocCmd = strings.Join(protocArgs, " ")
-	g, err := generator.NewDefaultRPCGenerator(style, generator.WithZRpcContext(&ctx))
+
+	cfg, err := conf.NewConfig(style)
+	if err != nil {
+		return err
+	}
+
+	g, err := generator.NewDefaultRPCGenerator(cfg, generator.WithZRpcContext(&ctx))
 	if err != nil {
 		return err
 	}
